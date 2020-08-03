@@ -14,7 +14,7 @@ namespace Utlegg
         {
             try
             {
-                var parts = input.Split('\t');
+                var parts = input.Split(';');
                 if (parts.Length < 4)
                 {
                     throw new Exception($"Invalid row: '{input}'");
@@ -24,7 +24,7 @@ namespace Utlegg
                     Date = parts[0],
                     Type = parts[1],
                     Description = parts[2],
-                    Amount = decimal.Parse(parts[3], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture)
+                    Amount = decimal.Parse(parts[3].Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture)
                 };
             }
             catch
