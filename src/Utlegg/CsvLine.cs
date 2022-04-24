@@ -1,42 +1,47 @@
 ﻿using System;
-using System.Globalization;
 
-namespace Utlegg
+namespace Utlegg;
+
+class CsvLine
 {
-    class CsvLine
+    public bool IsEmpty { get; private init; }
+    public string Date { get; private init; }
+    public string Type { get; private init; }
+    public string Description { get; private init; }
+    public decimal Amount { get; private init; }
+
+    public static CsvLine Parse(string input, int lineNumber)
     {
-        public string Date { get; private set; }
-        public string Type { get; private set; }
-        public string Description { get; private set; }
-        public decimal Amount { get; private set; }
-
-        public static CsvLine Parse(string input)
+        try
         {
-            try
+            var parts = input.Split(';');
+            if (parts.Length < 8)
             {
-                var parts = input.Split(';');
-                if (parts.Length < 4)
-                {
-                    throw new Exception($"Invalid row: '{input}'");
-                }
-                return new CsvLine
-                {
-                    Date = parts[0],
-                    Type = parts[1],
-                    Description = parts[2],
-                    Amount = decimal.Parse(parts[3].Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture)
-                };
+                return Empty;
             }
-            catch
-            {
-                Console.WriteLine($"Failed parsing {input}");
-                throw;
-            }
-        }
 
-        public override string ToString()
-        {
-            return $"{Date} {Type} {Description} {Amount}";
+            var minus = decimal.TryParse(parts[6].Replace(',', '.'), out var m) ? m : 0;
+            var plus = decimal.TryParse(parts[7].Replace(',', '.'), out var p) ? p : 0;
+            
+            return new CsvLine
+            {
+                Date = parts[0].Trim('"'),
+                Type = parts[4].Trim('"'),
+                Description = parts[5].Trim('"'),
+                Amount = plus + minus
+            };
         }
+        catch
+        {
+            Console.WriteLine($"Failed parsing line {lineNumber}. Input: '{input}'");
+            throw;
+        }
+    }
+
+    public static readonly CsvLine Empty = new CsvLine{ Description = "Empty", IsEmpty = true };
+
+    public override string ToString()
+    {
+        return IsEmpty ? "--- EMPTY ---" : $"{Date} {Type} {Description} {Amount}";
     }
 }
