@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Utlegg;
 
@@ -20,8 +21,8 @@ class CsvLine
                 return Empty;
             }
 
-            var minus = decimal.TryParse(parts[6].Replace(',', '.'), out var m) ? m : 0;
-            var plus = decimal.TryParse(parts[7].Replace(',', '.'), out var p) ? p : 0;
+            var minus = decimal.TryParse(parts[6].Replace(',', '.'), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var m) ? m : 0;
+            var plus = decimal.TryParse(parts[7].Replace(',', '.'), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var p) ? p : 0;
             
             return new CsvLine
             {
