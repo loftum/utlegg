@@ -21,14 +21,14 @@ class CsvLine
                 return Empty;
             }
 
-            var minus = decimal.TryParse(parts[6].Replace(',', '.'), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var m) ? m : 0;
-            var plus = decimal.TryParse(parts[7].Replace(',', '.'), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var p) ? p : 0;
+            var minus = decimal.TryParse(parts[2].Replace(',', '.'), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var m) ? m : 0;
+            var plus = decimal.TryParse(parts[1].Replace(',', '.'), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var p) ? p : 0;
             
             return new CsvLine
             {
                 Date = parts[0].Trim('"'),
-                Type = parts[4].Trim('"'),
-                Description = parts[5].Trim('"'),
+                Type = parts[7].Trim('"'),
+                Description = parts[8].Trim('"'),
                 Amount = plus + minus
             };
         }
